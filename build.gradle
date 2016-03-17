@@ -26,6 +26,8 @@ dependencies {
   compile("org.springframework.boot:spring-boot-starter-actuator")
   compile "org.codehaus.groovy:groovy-all:2.4.6"
   compile "com.rometools:rome:1.5.0"
+
+  testCompile "org.springframework.boot:spring-boot-starter-test"
 }
 
 sourceSets {

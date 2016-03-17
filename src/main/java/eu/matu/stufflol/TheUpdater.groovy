@@ -21,6 +21,11 @@ class TheUpdater {
       switch (it.type) {
         case Site.SourceType.RSS:
           log.debug("Getting updates for site with url: {}", it.url)
+
+          //get latest 10 entries from RSS feed
+
+          //check enabled series list to see which ones to crawl for
+
           break
         case Site.SourceType.URL:
           log.debug("Getting updates for site with url: {}", it.url)
