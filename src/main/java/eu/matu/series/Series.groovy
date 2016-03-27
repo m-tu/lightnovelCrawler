@@ -8,9 +8,7 @@ class Series {
   String urlPattern // {seriesPrefix}-{latestChapter}
   String seriesCategory
   String seriesPrefix   ///btth-index/btth-chapter-334/
-  int latestChapter
-  int latestBook
-  int latestPart
+  ChapterInfo chapterInfo
 
   Site site
   boolean active

@@ -6,15 +6,27 @@ import org.junit.Test
 class SeriesServiceTest extends GroovyTestCase {
 
   @Test
-  void testConstructNextChapterUrl() {
-    SeriesService seriesService = new SeriesService()
-    Site site = new Site(url: "https://www.wuxiaworld.com")
+  void test_chapter_url_construction_works() {
+    Site site = new Site(url: "https://www.wutworld.com")
     Series series = new Series(site: site,
-        urlPattern: "1",
         seriesCategory: "btth-index",
         seriesPrefix: "btth-chapter",
-        latestChapter: 334)
+        chapterInfo: new ChapterInfo(latestChapter: 333)  )
 
-    assert seriesService.constructNextChapterUrl(series) == "https://www.wuxiaworld.com/btth-index/btth-chapter-334/"
+    assert SeriesService.constructNextChapterUrl(series) == "https://www.wutworld.com/btth-index/btth-chapter-334/"
+  }
+
+  @Test
+  void test_url_with_book_works() {
+    Site site = new Site(url: "https://www.wutworld.com")
+    Series issth = new Series(
+        site: site,
+        urlPattern: "issth-book-@latestBook-chapter-@latestChapter",
+        seriesCategory: "issth-index",
+        seriesPrefix: "issth-book",
+        chapterInfo: new ChapterInfo(latestChapter: 147, latestBook: 2)
+    )
+
+    assert SeriesService.constructNextChapterUrl(issth) == "https://www.wutworld.com/issth-index/issth-book-2-chapter-148/"
   }
 }
