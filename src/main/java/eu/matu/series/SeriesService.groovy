@@ -3,6 +3,9 @@ package eu.matu.series
 import eu.matu.site.Site
 import eu.matu.util.RequestHelper
 import groovy.util.logging.Slf4j
+import org.jsoup.Jsoup
+import org.jsoup.nodes.Document
+import org.jsoup.nodes.Element
 import org.springframework.stereotype.Service
 
 @Service
@@ -28,10 +31,16 @@ class SeriesService {
 
   String parseChapter(Series series, String response) {
     log.debug("Parsing series: {} chapter: {}", series.seriesCategory, series.chapterInfo.latestChapter+1, )
-    def parsedChapter = response.isEmpty() ? null : "mockContent"
-    log.debug("Parse result: {}", parsedChapter)
-
-    return parsedChapter
+    try {
+      Document doc = Jsoup.parse(response);
+      Element body = doc.body();
+      def parsedChapter = body.getElementById("primary") != null ? 'mockContent' : null
+      log.debug("Parse result: {}", parsedChapter)
+      return parsedChapter
+    } catch (Exception e) {
+      log.debug("Get exception while parsing chapter: {}", e)
+      return null
+    }
   }
 
   //TODO if some exception here, we need to check for it and handle unsuccessful parse
@@ -46,7 +55,6 @@ class SeriesService {
     String nextChapUrl = constructNextChapterUrl(series)
     def response = RequestHelper.makeRequest(nextChapUrl)
     String parsedChapter = parseChapter(series, response)
-    int latestChapter = 0
 
     while(parsedChapter != null) {
       series.chapterInfo.latestChapter = series.chapterInfo.latestChapter + 1
@@ -54,7 +62,7 @@ class SeriesService {
       response = RequestHelper.makeRequest(nextChapUrl)
       parsedChapter = parseChapter(series, response)
       nextChapUrl = constructNextChapterUrl(series)
-      Thread.sleep(1000) //in case we get stuck in the loop
+      Thread.sleep(1000) //TODO in case we get stuck in the loop, remove later
     }
 
     series.chapterInfo.latestChapter

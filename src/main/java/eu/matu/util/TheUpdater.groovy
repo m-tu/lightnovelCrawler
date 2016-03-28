@@ -40,18 +40,13 @@ class TheUpdater {
         })
     }
     log.debug("Waiting for all responses to return")
-    List<Future<?>> futures = taskExecutor.invokeAll(tasks);
+    List<Future<Integer>> futures = taskExecutor.invokeAll(tasks);
 
     futures.each {
-      log.debug("Got responses: {}", it)
+      log.debug("Got responses: {}", it.get())
     }
 
   }
-
-//  File file = new File("/Users/martenhennoch/Repository/javaSamples/data/btth-chapter-335.html");
-//  Document doc = Jsoup.parse(file, "UTF-8", "");
-//  Element body = doc.body();
-//  return body.getElementById("primary").getElementsByClass("entry-content").toString()
 
   void update() {
 
