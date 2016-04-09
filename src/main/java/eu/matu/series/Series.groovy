@@ -5,14 +5,12 @@ import eu.matu.site.Site
 class Series {
 
   String displayName
-  String urlPattern // {seriesPrefix}-{latestChapter}
+  String urlPattern
   String seriesCategory
-  String seriesPrefix   ///btth-index/btth-chapter-334/
+  String seriesPrefix
+  String contentSelector
   ChapterInfo chapterInfo
 
   Site site
   boolean active
-
-  //page layout
-
 }

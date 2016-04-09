@@ -29,4 +29,20 @@ class SeriesServiceTest extends GroovyTestCase {
 
     assert SeriesService.constructNextChapterUrl(issth) == "https://www.wutworld.com/issth-index/issth-book-2-chapter-148/"
   }
+
+  @Test
+  void test_parsing_empty_chapter_should_return_null() {
+    SeriesService seriesService = new SeriesService()
+    Site site = new Site(url: "https://www.wutworld.com")
+    Series series = new Series(site: site,
+        seriesCategory: "btth-index",
+        seriesPrefix: "btth-chapter",
+        chapterInfo: new ChapterInfo(latestChapter: 333)  )
+
+    String requestContent = ""
+    def parsedChapter = seriesService.parseChapter(series, requestContent)
+
+    assert parsedChapter == null
+  }
+
 }

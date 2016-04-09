@@ -34,9 +34,7 @@ class SeriesService {
     try {
       Document doc = Jsoup.parse(response);
       Element body = doc.body();
-      def parsedChapter = body.getElementById("primary") != null ? 'mockContent' : null
-      log.debug("Parse result: {}", parsedChapter)
-      return parsedChapter
+      return body.getElementById("primary")
     } catch (Exception e) {
       log.debug("Get exception while parsing chapter: {}", e)
       return null
@@ -44,25 +42,27 @@ class SeriesService {
   }
 
   //TODO if some exception here, we need to check for it and handle unsuccessful parse
-  void handleChapter(String chapter) {
-
+  void handleChapter(String chapter, Series series) {
+    if(chapter != null) {
+      series.chapterInfo.latestChapter = series.chapterInfo.latestChapter + 1
+    }
   }
 
   //We need to keep checking for new chapters until there is no new ones
   //so we can only ask for one chapter at the time
   //after we get response we either check for new one if this one was real chapter or stop
   int sync(Series series) {
-    String nextChapUrl = constructNextChapterUrl(series)
-    def response = RequestHelper.makeRequest(nextChapUrl)
-    String parsedChapter = parseChapter(series, response)
+    String parsedChapter = ""
 
     while(parsedChapter != null) {
-      series.chapterInfo.latestChapter = series.chapterInfo.latestChapter + 1
-//      handleChapter(parsedChapter)
-      response = RequestHelper.makeRequest(nextChapUrl)
+      String nextChapUrl = constructNextChapterUrl(series)
+      String response = RequestHelper.makeRequest(nextChapUrl)
+
       parsedChapter = parseChapter(series, response)
-      nextChapUrl = constructNextChapterUrl(series)
-      Thread.sleep(1000) //TODO in case we get stuck in the loop, remove later
+      handleChapter(parsedChapter, series)
+      log.debug("Parse result: {}", parsedChapter?.length())
+
+      Thread.sleep(2000) //TODO in case we get stuck in the loop, remove later
     }
 
     series.chapterInfo.latestChapter
