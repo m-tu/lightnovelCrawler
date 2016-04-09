@@ -45,4 +45,22 @@ class SeriesServiceTest extends GroovyTestCase {
     assert parsedChapter == null
   }
 
+  @Test
+  void test_parsing_chapter_via_selector_works() {
+    ClassLoader classLoader = getClass().getClassLoader();
+    String content = new File(classLoader.getResource("btth-chapter-350.html").getFile()).text;
+
+    SeriesService seriesService = new SeriesService()
+    Site site = new Site(url: "https://www.wutworld.com")
+    Series series = new Series(site: site,
+        contentSelector: "#primary .entry-content",
+        seriesCategory: "btth-index",
+        seriesPrefix: "btth-chapter",
+        chapterInfo: new ChapterInfo(latestChapter: 333)  )
+
+    def parsedChapter = seriesService.parseChapter(series, content)
+
+    assert parsedChapter != null
+  }
+
 }
